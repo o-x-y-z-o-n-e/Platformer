@@ -1,0 +1,1 @@
+﻿Platformer.Core.Instance.Run();
