@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Platformer.World;
 
 public class Context {
 
     public Player Player => player;
-    public Stage? CurrentStage => GetStage(currentStageIndex);
+    public Stage CurrentStage => GetStage(currentStageIndex);
 
     public int StageCount => stages.Count;
 
@@ -14,12 +15,12 @@ public class Context {
     private int currentStageIndex;
 
     public Context() {
-        player = new Player();
+        player = System.Activator.CreateInstance(Core.Instance.GetPlayerTpye()) as Player;
         stages = new List<Stage>();
         currentStageIndex = -1;
     }
 
-    public Stage? GetStage(int i) {
+    public Stage GetStage(int i) {
         return i >= 0 && i < stages.Count ? stages[i] : null;
     }
 }
