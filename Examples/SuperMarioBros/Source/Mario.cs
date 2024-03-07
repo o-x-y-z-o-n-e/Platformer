@@ -8,6 +8,7 @@ public class Mario : Player {
 	public Mario() {
 		sprite.Texture = Assets.Load<Texture2D>("mario_and_luigi.png");
 		sprite.Section = new Rectangle(0, 8, 16, 16);
+		sprite.Pivot = new Vector2(8, 16);
 	}
 
 }

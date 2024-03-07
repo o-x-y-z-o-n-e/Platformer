@@ -10,7 +10,8 @@ namespace Platformer;
 public class Core : Game {
 
 	public static Core Instance => instance;
-	public static SpriteBatch SpriteBatch => Instance.spriteBatch;
+	public static SpriteBatch SpriteBatch => instance.spriteBatch;
+	public static GraphicsDevice Graphics => instance.GraphicsDevice;
 
 	private static Core instance;
 
@@ -102,10 +103,6 @@ public static class Assets {
 }
 
 /*
-Sprite
-	Transform
-	Camera
-
 Tilemap
 	Read Data (Tiled Format)
 	Construct Mesh
