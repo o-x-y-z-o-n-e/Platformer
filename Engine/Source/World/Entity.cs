@@ -10,10 +10,12 @@ public class Entity {
     // Protected
     protected int tickRate = DEFAULT_TICK_RATE;
     protected float tickInterval => 1.0F / tickRate;
+    protected Matrix transform = Matrix.Identity;
 
     // Private
     private Vector2 position = Vector2.Zero;
     private float tickTimer = 0.0F;
+    
 
     public Entity() {
         LoadAssets();

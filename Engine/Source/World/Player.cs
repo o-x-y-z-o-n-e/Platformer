@@ -9,10 +9,22 @@ public class Player : Entity {
 
     public Player() {
 		sprite = new Sprite();
+
+		transform = Matrix.CreateTranslation(0, 0, 0);
 	}
 
 	public override void Draw() {
-		sprite.Draw();
+		Core.SpriteBatch.Begin(
+			SpriteSortMode.Deferred,
+			BlendState.AlphaBlend,
+			SamplerState.PointClamp,
+			null,
+			null,
+			null,
+			Camera.GetView() * transform
+		);
+        sprite.Draw();
+		Core.SpriteBatch.End();
 	}
 
 }

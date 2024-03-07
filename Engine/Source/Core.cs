@@ -57,15 +57,13 @@ public class Core : Game {
 		GraphicsDevice.SetRenderTarget(frame);
 		GraphicsDevice.Clear(Color.Black);
 
-		spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp);
         if(context != null) {
 			context.Player.Draw();
         }
-		spriteBatch.End();
 
 		// TODO: Aspect Ratio
 		GraphicsDevice.SetRenderTarget(null);
-		spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp);
+		spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Opaque, SamplerState.PointClamp);
 		spriteBatch.Draw(
 			frame,
 			new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height),
@@ -103,6 +101,18 @@ public static class Assets {
 
 }
 
-// Camera
-// Tilemap
-// Player
+/*
+Sprite
+	Transform
+	Camera
+
+Tilemap
+	Read Data (Tiled Format)
+	Construct Mesh
+
+Physics
+
+Player
+	Input
+	Movement
+*/
