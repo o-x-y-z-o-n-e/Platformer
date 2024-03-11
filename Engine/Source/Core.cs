@@ -32,11 +32,12 @@ public class Core : Game {
 		graphics = new GraphicsDeviceManager(this);
 		Content.RootDirectory = "Assets";
 		IsMouseVisible = true;
+		Window.AllowUserResizing = true;
 	}
 
 	protected override void Initialize() {
 		spriteBatch = new SpriteBatch(GraphicsDevice);
-		
+
 		Camera.SetDimenions(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
 
 		context = new Context();
@@ -48,35 +49,88 @@ public class Core : Game {
         float deltaTime = gameTime.ElapsedGameTime.Seconds;
 
         if(context != null) {
-			context.Player.Update(deltaTime);
+			context.Update(deltaTime);
         }
-    }
+	}
 
     protected override void Draw(GameTime gameTime) {
 		base.Draw(gameTime);
 
-		GraphicsDevice.SetRenderTarget(frame);
-		GraphicsDevice.Clear(Color.Black);
+		if(frame != null) Graphics.SetRenderTarget(frame);
+
+		Graphics.Clear(Color.Blue);
 
         if(context != null) {
-			context.Player.Draw();
+			context.Draw();
         }
 
-		// TODO: Aspect Ratio
-		GraphicsDevice.SetRenderTarget(null);
-		spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Opaque, SamplerState.PointClamp);
-		spriteBatch.Draw(
-			frame,
-			new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height),
-			Color.White
-		);
-		spriteBatch.End();
+		if(frame != null) {
+			DrawFrameToViewport();
+		}
 	}
 
 	public virtual Type GetPlayerTpye() => typeof(Player);
 
 	internal void AllocateFrame() {
 		frame = new RenderTarget2D(GraphicsDevice, Camera.Width, Camera.Height);
+	}
+
+	private void DrawFrameToViewport() {
+		Graphics.SetRenderTarget(null);
+		Graphics.Clear(Color.Black);
+
+		int w = Graphics.Viewport.Width;
+		int h = Graphics.Viewport.Height;
+
+		int bottom = 0;
+		int top = h;
+		int left = 0;
+		int right = w;
+
+		int v_reduction = 0;
+		int h_reduction = 0;
+
+		float h_ratio = w / (float)frame.Width;
+		float v_ratio = w / (float)frame.Height;
+		int h_scale = w / frame.Width;
+		int v_scale = h / frame.Height;
+		int min_scale = h_scale < v_scale ? h_scale : v_scale;
+
+		int new_width = w;
+		int new_height = h;
+
+		bool preserve_aspect = true;
+		bool pixel_perfect = true;
+
+		if(pixel_perfect) {
+			new_width = frame.Width * min_scale;
+			new_height = frame.Height * min_scale;
+
+			v_reduction = h - new_height;
+			h_reduction = w - new_width;
+		} else if(preserve_aspect) {
+			new_height = (int)(frame.Height * h_ratio);
+			new_width = (int)(frame.Width * v_ratio);
+
+			if(h_ratio < v_ratio) {
+				v_reduction = h - new_height;
+			} else {
+				h_reduction = w - new_width;
+			}
+		}
+
+		bottom = v_reduction / 2;
+		top = h - (v_reduction - bottom);
+		left = h_reduction / 2;
+		right = w - (h_reduction - left);
+
+		spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Opaque, SamplerState.PointClamp);
+		spriteBatch.Draw(
+			frame,
+			new Rectangle(left, bottom, right - left, top - bottom),
+			Color.White
+		);
+		spriteBatch.End();
 	}
 }
 
